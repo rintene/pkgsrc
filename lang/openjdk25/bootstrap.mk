@@ -34,10 +34,7 @@ EXTRACT_ONLY+=			${BOOT.nb9-aarch64}
 ONLY_FOR_PLATFORM+=     SunOS-*-x86_64
 ALT_BOOTDIR=            /opt/local/java/openjdk21
 .if ${OPSYS} == "SunOS"
-#ALT_BOOTDIR=            /opt/local/java/openjdk21
 PKG_OPTIONS.openjdk25=  jdk-zero-vm -x11 -jre-jce
-#.else
-#ALT_BOOTDIR=            ${WRKDIR}/bootstrap
 .endif
 
 CONFIGURE_ENV+=		LD_LIBRARY_PATH=${ALT_BOOTDIR}/lib

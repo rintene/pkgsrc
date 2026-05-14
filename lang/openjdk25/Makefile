@@ -9,7 +9,7 @@ GITHUB_TAG=	jdk-25.0.3-ga
 
 MAINTAINER=	ryoon@NetBSD.org
 HOMEPAGE=	https://openjdk.java.net/
-COMMENT=	Open-source implementation of the Java Platform, 21 LTS
+COMMENT=	Open-source implementation of the Java Platform, 25 LTS
 LICENSE=	gnu-gpl-v2
 
 DISTFILES=	${DEFAULT_DISTFILES}
