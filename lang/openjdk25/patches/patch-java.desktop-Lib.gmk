@@ -1,0 +1,11 @@
+--- make/modules/java.desktop/Lib.gmk.orig	2026-05-05 13:58:47.950148339 +0200
++++ make/modules/java.desktop/Lib.gmk	2026-05-05 13:59:00.184080123 +0200
+@@ -37,7 +37,7 @@
+ include lib/AwtLibraries.gmk
+ include lib/ClientLibraries.gmk
+ 
+-ifeq ($(call isTargetOs, aix), false)
++ifeq ($(call isTargetOs, aix solaris), false)
+   ##############################################################################
+   # Build libjsound
+   ##############################################################################

@@ -1,0 +1,11 @@
+--- make/common/FileUtils.gmk
++++ make/common/FileUtils.gmk
+@@ -140,7 +140,7 @@
+ else
+   define install-file
+ 	$(call MakeTargetDir)
+-	$(CP) -fP '$(call DecodeSpace, $<)' '$(call DecodeSpace, $@)'
++	$(CP) -fp '$(call DecodeSpace, $<)' '$(call DecodeSpace, $@)'
+   endef
+ endif
+ 

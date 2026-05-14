@@ -1,0 +1,18 @@
+--- make/modules/java.base/Lib.gmk.orig	2026-04-08 17:57:45.116881392 +0200
++++ make/modules/java.base/Lib.gmk	2026-04-08 18:00:25.739433910 +0200
+@@ -58,6 +58,7 @@
+     JDK_LIBS := libjava libjvm, \
+     LIBS_linux := $(LIBDL), \
+     LIBS_aix := $(LIBDL), \
++    LIBS_solaris := -lsocket -lnsl, \
+     LIBS_windows := advapi32.lib delayimp.lib iphlpapi.lib secur32.lib \
+         winhttp.lib ws2_32.lib, \
+     LIBS_macosx := \
+@@ -83,6 +84,7 @@
+     JDK_LIBS := libjava libnet, \
+     LIBS_linux := $(LIBDL) $(LIBPTHREAD), \
+     LIBS_aix := $(LIBDL), \
++    LIBS_solaris := -lsocket -lnsl -lsendfile, \
+     LIBS_macosx := \
+         -framework CoreFoundation \
+         -framework CoreServices, \

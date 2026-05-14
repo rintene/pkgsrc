@@ -1,0 +1,14 @@
+$NetBSD$
+
+--- make/ToolsJdk.gmk.orig	Mon Mar 16 12:58:07 2026
++++ make/ToolsJdk.gmk	Mon Mar 16 12:58:07 2026
+@@ -98,8 +98,7 @@
+ TOOL_WRAPPERGENERATOR = $(JAVA_SMALL) -cp $(BUILDTOOLS_OUTPUTDIR)/jdk_tools_classes \
+     build.tools.x11wrappergen.WrapperGenerator
+ 
+-TOOL_AWT_TOBIN = $(JAVA_SMALL) -Djava.awt.headless=true -cp $(BUILDTOOLS_OUTPUTDIR)/jdk_tools_classes \
+-    build.tools.icondata.awt.ToBin
++TOOL_AWT_TOBIN = @PERL5@ @TOBIN_PL@
+ 
+ TOOL_OSX_TOBIN = $(JAVA_SMALL) -Djava.awt.headless=true -cp $(BUILDTOOLS_OUTPUTDIR)/jdk_tools_classes \
+     build.tools.icondata.osxapp.ToBin

@@ -1,0 +1,39 @@
+--- make/modules/jdk.javadoc/Gendata.gmk.orig	2026-05-06 18:10:48.511870665 +0200
++++ make/modules/jdk.javadoc/Gendata.gmk	2026-05-06 18:11:06.210748357 +0200
+@@ -48,15 +48,14 @@
+     #
+ 
+ $(eval $(call SetupJavaCompilation, COMPILE_CREATE_SYMBOLS, \
+-    TARGET_RELEASE := $(TARGET_RELEASE_BOOTJDK), \
++    TARGET_RELEASE := $(TARGET_RELEASE_NEWJDK), \
++    COMPILER := buildjdk, \
+     SRC := $(TOPDIR)/make/langtools/src/classes \
+         $(TOPDIR)/src/jdk.jdeps/share/classes, \
+     INCLUDES := build/tools/symbolgenerator, \
+     BIN := $(BUILDTOOLS_OUTPUTDIR)/create_symbols_javadoc, \
+     DISABLED_WARNINGS := options, \
+-    JAVAC_FLAGS := \
+-        $(INTERIM_LANGTOOLS_ARGS) \
+-        $(COMPILECREATESYMBOLS_ADD_EXPORTS), \
++    JAVAC_FLAGS := @$(TOPDIR)/make/modules/jdk.javadoc/createsymbols_javadoc_args.txt, \
+ ))
+ 
+ GENERATE_SYMBOLS_FROM_JDK_VERSION := 11
+@@ -75,7 +74,7 @@
+ 				 $(JDK_SOURCE_TARGET_VERSION)))}.txt
+         # Generate element-list files for JDK 11 to current-1
+ 	$(call ExecuteWithLog, $@_historic, \
+-	    $(JAVA_SMALL) $(INTERIM_LANGTOOLS_ARGS) \
++	    $(BUILD_JAVA_SMALL) $(INTERIM_LANGTOOLS_ARGS) \
+ 	        $(COMPILECREATESYMBOLS_ADD_EXPORTS) \
+ 	        -classpath $(BUILDTOOLS_OUTPUTDIR)/create_symbols_javadoc \
+ 	        build.tools.symbolgenerator.CreateSymbols \
+@@ -86,7 +85,7 @@
+ 	)
+         # Generate element-list file for the current JDK version
+ 	$(call ExecuteWithLog, $@_current, \
+-	    $(JAVA_SMALL) $(INTERIM_LANGTOOLS_ARGS) \
++	    $(BUILD_JAVA_SMALL) $(INTERIM_LANGTOOLS_ARGS) \
+ 	        $(COMPILECREATESYMBOLS_ADD_EXPORTS) \
+ 	        -classpath $(BUILDTOOLS_OUTPUTDIR)/create_symbols_javadoc \
+ 	        build.tools.symbolgenerator.JavadocElementList \

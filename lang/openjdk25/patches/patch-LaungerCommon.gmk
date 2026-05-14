@@ -1,0 +1,10 @@
+--- make/common/modules/LauncherCommon.gmk.orig 2026-04-21 17:28:07.541121461 +0200
++++ make/common/modules/LauncherCommon.gmk      2026-04-21 17:28:25.876101372 +0200
+@@ -158,6 +158,7 @@
+       LDFLAGS := $$($1_LDFLAGS), \
+       LDFLAGS_linux := $$(call SET_EXECUTABLE_ORIGIN,/../lib), \
+       LDFLAGS_macosx := $$(call SET_EXECUTABLE_ORIGIN,/../lib), \
++      LDFLAGS_solaris := $$(call SET_EXECUTABLE_ORIGIN,/../lib), \
+       LDFLAGS_FILTER_OUT := $$($1_LDFLAGS_FILTER_OUT), \
+       JDK_LIBS := $$($1_JDK_LIBS), \
+       JDK_LIBS_windows := $$($1_JDK_LIBS_windows), \

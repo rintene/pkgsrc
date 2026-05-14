@@ -1,0 +1,18 @@
+--- make/modules/jdk.net/Lib.gmk.orig	2026-05-06 11:16:32.701093002 +0200
++++ make/modules/jdk.net/Lib.gmk	2026-05-06 11:17:02.980686375 +0200
+@@ -30,7 +30,7 @@
+ ################################################################################
+ ## Build libextnet
+ ################################################################################
+-
++ifeq ($(call isTargetOs, solaris), false)
+ $(eval $(call SetupJdkLibrary, BUILD_LIBEXTNET, \
+     NAME := extnet, \
+     OPTIMIZATION := LOW, \
+@@ -40,5 +40,5 @@
+ ))
+ 
+ TARGETS += $(BUILD_LIBEXTNET)
+-
++endif
+ ################################################################################

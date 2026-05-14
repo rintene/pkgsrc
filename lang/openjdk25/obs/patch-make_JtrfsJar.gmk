@@ -1,0 +1,11 @@
+--- make/JrtfsJar.gmk.orig	2026-05-06 19:19:06.458315246 +0200
++++ make/JrtfsJar.gmk	2026-05-06 19:19:12.730826680 +0200
+@@ -50,7 +50,7 @@
+ # Compile jrt-fs.jar with the interim compiler, as it
+ # ends up in the image, this will ensure reproducible classes
+ $(eval $(call SetupJavaCompilation, BUILD_JRTFS, \
+-    COMPILER := interim, \
++    COMPILER := bootjdk, \
+     DISABLED_WARNINGS := options, \
+     TARGET_RELEASE := $(TARGET_RELEASE_JDK8), \
+     SRC := $(TOPDIR)/src/java.base/share/classes, \

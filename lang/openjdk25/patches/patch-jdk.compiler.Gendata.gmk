@@ -1,0 +1,18 @@
+--- make/modules/jdk.compiler/Gendata.gmk.orig	2026-05-06 18:07:01.798222198 +0200
++++ make/modules/jdk.compiler/Gendata.gmk	2026-05-06 18:07:16.096568875 +0200
+@@ -57,14 +57,12 @@
+ 
+ # TODO: Unify with jdk.javadoc-gendata. Should only compile this once and share.
+ $(eval $(call SetupJavaCompilation, COMPILE_CREATE_SYMBOLS, \
+-    TARGET_RELEASE := $(TARGET_RELEASE_NEWJDK), \
+     COMPILER := buildjdk, \
+     SRC := $(TOPDIR)/make/langtools/src/classes, \
+     INCLUDES := build/tools/symbolgenerator, \
+     BIN := $(BUILDTOOLS_OUTPUTDIR)/create_symbols_javac, \
+     DISABLED_WARNINGS := options, \
+-    JAVAC_FLAGS := \
+-        $(COMPILECREATESYMBOLS_ADD_EXPORTS), \
++    JAVAC_FLAGS := @$(TOPDIR)/make/modules/jdk.compiler/createsymbols_args.txt, \
+ ))
+ 
+ $(SUPPORT_OUTPUTDIR)/symbols/ct.sym: $(COMPILE_CREATE_SYMBOLS) $(SYMBOL_FILES) \

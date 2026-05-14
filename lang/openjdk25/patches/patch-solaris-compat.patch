@@ -1,0 +1,54 @@
+--- /dev/null
++++ src/java.base/unix/native/libjava/solaris_compat.h
+@@ -0,0 +1,37 @@
++#ifdef __sun
++
++#include <pwd.h>
++#include <grp.h>
++
++/* Solaris compatibility wrappers for old reentrant functions (4-argument versions) */
++
++static inline int solaris_getpwuid_r(uid_t uid, struct passwd *pwd, char *buf, size_t buflen, struct passwd **result) {
++    struct passwd *p = getpwuid_r(uid, pwd, buf, (int)buflen);
++    *result = p;
++    return (p == NULL) ? errno : 0;
++}
++
++static inline int solaris_getpwnam_r(const char *name, struct passwd *pwd, char *buf, size_t buflen, struct passwd **result) {
++    struct passwd *p = getpwnam_r(name, pwd, buf, (int)buflen);
++    *result = p;
++    return (p == NULL) ? errno : 0;
++}
++
++static inline int solaris_getgrgid_r(gid_t gid, struct group *grp, char *buf, size_t buflen, struct group **result) {
++    struct group *g = getgrgid_r(gid, grp, buf, (int)buflen);
++    *result = g;
++    return (g == NULL) ? errno : 0;
++}
++
++static inline int solaris_getgrnam_r(const char *name, struct group *grp, char *buf, size_t buflen, struct group **result) {
++    struct group *g = getgrnam_r(name, grp, buf, (int)buflen);
++    *result = g;
++    return (g == NULL) ? errno : 0;
++}
++
++#define getpwuid_r solaris_getpwuid_r
++#define getpwnam_r solaris_getpwnam_r
++#define getgrgid_r solaris_getgrgid_r
++#define getgrnam_r solaris_getgrnam_r
++
++#endif /* __sun */
+--- src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c.orig     2026-04-08 15:02:30.741787070 +0200
++++ src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c  2026-04-08 15:06:49.774858376 +0200
+@@ -50,6 +50,11 @@
+   #include <sys/procfs.h>
+ #endif
+
++#if defined(__sun)
++ #include "solaris_compat.h"
++ #include <sys/syscall.h>
++#endif
++
+ /**
+  * This file contains the implementation of the native ProcessHandleImpl
+  * functions which are common to all Unix variants.

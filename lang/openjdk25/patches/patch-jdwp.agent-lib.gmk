@@ -1,0 +1,18 @@
+--- make/modules/jdk.jdwp.agent/Lib.gmk.orig	2026-04-21 20:12:19.462553818 +0200
++++ make/modules/jdk.jdwp.agent/Lib.gmk	2026-04-21 20:15:10.036837819 +0200
+@@ -40,6 +40,7 @@
+         libjdwp/export, \
+     LIBS_linux := $(LIBPTHREAD), \
+     LIBS_windows := iphlpapi.lib ws2_32.lib, \
++    LIBS_solaris := -lsocket, \
+ ))
+ 
+ # Include socket transport with JDWP agent to allow for remote debugging
+@@ -77,6 +78,7 @@
+     JDK_LIBS := java.base:libjvm, \
+     LIBS := $(ICONV_LIBS), \
+     LIBS_linux := $(LIBDL), \
++    LIBS_solaris := -lsocket, \
+ ))
+ 
+ TARGETS += $(BUILD_LIBJDWP)

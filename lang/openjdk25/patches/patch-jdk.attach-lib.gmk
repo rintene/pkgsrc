@@ -1,0 +1,10 @@
+--- make/modules/jdk.attach/Lib.gmk.orig	2026-04-21 19:51:22.685413084 +0200
++++ make/modules/jdk.attach/Lib.gmk	2026-04-21 19:51:43.325117599 +0200
+@@ -45,6 +45,7 @@
+     CFLAGS_windows := -Gy, \
+     JDK_LIBS := java.base:libjava, \
+     LIBS_windows := advapi32.lib psapi.lib, \
++    LIBS_solaris := -lsocket, \
+ ))
+ 
+ TARGETS += $(BUILD_LIBATTACH)

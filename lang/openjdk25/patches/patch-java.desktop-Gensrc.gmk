@@ -1,0 +1,11 @@
+--- make/modules/java.desktop/Gensrc.gmk.orig	2026-05-05 17:39:48.645788500 +0200
++++ make/modules/java.desktop/Gensrc.gmk	2026-05-05 17:40:21.541583136 +0200
+@@ -31,7 +31,7 @@
+   include gensrc/GensrcIcons.gmk
+ endif
+ 
+-ifeq ($(call isTargetOs, linux aix), true)
++ifeq ($(call isTargetOs, linux aix solaris), true)
+   include gensrc/GensrcX11Wrappers.gmk
+ endif
+ 

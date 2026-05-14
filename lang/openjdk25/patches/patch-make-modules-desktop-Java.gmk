@@ -1,0 +1,19 @@
+--- make/modules/java.desktop/Java.gmk.orig     2026-02-04 03:45:26.000000000 +0100
++++ make/modules/java.desktop/Java.gmk  2026-05-05 16:02:22.225253397 +0200
+@@ -109,6 +109,16 @@
+       sun/awt/X11/XwcTextItem.java
+ endif
+
++ifeq ($(ENABLE_HEADLESS_ONLY), true)
++  EXCLUDES += \
++      sun/awt/X11 \
++      sun/java2d/x11 \
++      sun/java2d/jules \
++      sun/java2d/xr \
++      com/sun/java/swing/plaf/gtk \
++      #
++endif
++
+ ifeq ($(call isTargetOs, windows), true)
+   EXCLUDES += com/sun/java/swing/plaf/gtk
+ endif

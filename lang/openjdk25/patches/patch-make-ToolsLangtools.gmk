@@ -1,0 +1,11 @@
+--- make/ToolsLangtools.gmk.orig	2026-05-06 18:22:03.809748150 +0200
++++ make/ToolsLangtools.gmk	2026-05-06 18:22:25.276669365 +0200
+@@ -34,7 +34,7 @@
+ # upon $(BUILD_TOOLS_LANGTOOLS) to trigger a compilation of the tools.
+ $(eval $(call SetupJavaCompilation, BUILD_TOOLS_LANGTOOLS, \
+     COMPILER := bootjdk, \
+-    TARGET_RELEASE := $(TARGET_RELEASE_BOOTJDK), \
++    TARGET_RELEASE := $$(TARGET_RELEASE_BOOTJDK), \
+     SRC := $(TOPDIR)/make/langtools/tools, \
+     INCLUDES := compileproperties propertiesparser, \
+     COPY := .properties, \
