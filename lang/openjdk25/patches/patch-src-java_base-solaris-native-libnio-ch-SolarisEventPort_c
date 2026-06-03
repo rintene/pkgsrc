@@ -1,0 +1,94 @@
+--- /dev/null
++++ src/java.base/solaris/native/libnio/ch/SolarisEventPort.c
+@@ -0,0 +1,90 @@
++/* src/java.base/solaris/native/libnio/ch/SolarisEventPort.c */
++
++#include <unistd.h>
++#include <sys/types.h>
++#include <port.h>
++#include <poll.h>
++#include <errno.h>
++#include <string.h>
++
++#include "jni.h"
++#include "jni_util.h"
++#include "jvm.h"
++#include "jlong.h"
++#include "nio.h"
++#include "nio_util.h"
++#include "sun_nio_ch_SolarisEventPort.h"
++
++JNIEXPORT jint JNICALL
++Java_sun_nio_ch_SolarisEventPort_eventSize(JNIEnv* env, jclass clazz)
++{
++    return sizeof(port_event_t);
++}
++
++JNIEXPORT jint JNICALL
++Java_sun_nio_ch_SolarisEventPort_objectOffset(JNIEnv* env, jclass clazz)
++{
++    return offsetof(port_event_t, portev_object);
++}
++
++JNIEXPORT jint JNICALL
++Java_sun_nio_ch_SolarisEventPort_port_1create(JNIEnv *env, jclass clazz)
++{
++    int port = port_create();
++    if (port < 0) {
++        JNU_ThrowIOExceptionWithLastError(env, "port_create failed");
++    }
++    return port;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_sun_nio_ch_SolarisEventPort_port_1associate(JNIEnv *env, jclass clazz,
++    jint port, jint source, jlong object, jint events)
++{
++    int res = port_associate((int)port, (int)source,
++                             (uintptr_t)object, (int)events, NULL);
++    if (res < 0) {
++        if (errno == EBADFD)
++            return JNI_FALSE;
++        JNU_ThrowIOExceptionWithLastError(env, "port_associate failed");
++    }
++    return JNI_TRUE;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_sun_nio_ch_SolarisEventPort_port_1dissociate(JNIEnv *env, jclass clazz,
++    jint port, jint source, jlong object)
++{
++    int res = port_dissociate((int)port, (int)source, (uintptr_t)object);
++    if (res < 0) {
++        if (errno == ENOENT)
++            return JNI_FALSE;
++        JNU_ThrowIOExceptionWithLastError(env, "port_dissociate failed");
++    }
++    return JNI_TRUE;
++}
++
++JNIEXPORT jint JNICALL
++Java_sun_nio_ch_SolarisEventPort_port_1getn(JNIEnv *env, jclass clazz,
++    jint port, jlong pollAddress, jint maxEvents, jlong timeout)
++{
++    port_event_t *events = (port_event_t *)jlong_to_ptr(pollAddress);
++    struct timespec ts;
++    struct timespec *tsp = NULL;
++    uint_t nget = 1;  /* minimum events to wait for */
++
++    if (timeout >= 0) {
++        ts.tv_sec  = timeout / 1000;
++        ts.tv_nsec = (timeout % 1000) * 1000000;
++        tsp = &ts;
++    }
++
++    int res = port_getn((int)port, events, (uint_t)maxEvents, &nget, tsp);
++    if (res < 0) {
++        if (errno == ETIME || errno == EINTR)
++            return (jint)nget;
++        JNU_ThrowIOExceptionWithLastError(env, "port_getn failed");
++        return -1;
++    }
++    return (jint)nget;
++}
+

@@ -1,0 +1,47 @@
+--- /dev/null
++++ src/java.base/solaris/classes/sun/nio/fs/SolarisFileStore.java
+@@ -0,0 +1,43 @@
++package sun.nio.fs;
++
++import java.io.IOException;
++
++class SolarisFileStore extends UnixFileStore {
++    SolarisFileStore(UnixPath file) throws IOException {
++        super(file);
++    }
++    SolarisFileStore(UnixFileSystem fs, UnixMountEntry entry) throws IOException {
++        super(fs, entry);
++    }
++
++    @Override
++    UnixMountEntry findMountEntry() throws IOException {
++        SolarisFileSystem fs = (SolarisFileSystem)file().getFileSystem();
++        UnixPath path = null;
++        try {
++            byte[] rp = UnixNativeDispatcher.realpath(file());
++            path = new UnixPath(fs, rp);
++        } catch (UnixException x) {
++            x.rethrowAsIOException(file());
++        }
++        UnixPath parent = path.getParent();
++        while (parent != null) {
++            UnixFileAttributes attrs = null;
++            try {
++                attrs = UnixFileAttributes.get(parent, true);
++            } catch (UnixException x) {
++                x.rethrowAsIOException(parent);
++            }
++            if (attrs.dev() != dev())
++                break;
++            path = parent;
++            parent = parent.getParent();
++        }
++        byte[] dir = path.asByteArray();
++        for (UnixMountEntry entry : fs.getMountEntries()) {
++            if (java.util.Arrays.equals(dir, entry.dir()))
++                return entry;
++        }
++        throw new IOException("Mount point not found");
++    }
++}
+

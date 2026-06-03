@@ -1,0 +1,14 @@
+--- src/java.base/unix/native/libnio/ch/Net.c.orig      2026-04-08 16:14:13.413803096 +0200
++++ src/java.base/unix/native/libnio/ch/Net.c   2026-04-08 16:14:52.821792093 +0200
+@@ -47,6 +47,11 @@
+ #include <sys/utsname.h>
+ #endif
+
++#if defined(__sun)
++#include <sys/filio.h>
++#endif
++
++
+ /**
+  * IP_MULTICAST_ALL supported since 2.6.31 but may not be available at
+  * build time.

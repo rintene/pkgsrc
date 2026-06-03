@@ -1,0 +1,13 @@
+--- src/java.base/unix/native/libjava/io_util_md.c.orig	2026-04-08 16:09:49.970437852 +0200
++++ src/java.base/unix/native/libjava/io_util_md.c	2026-04-08 16:10:12.180121302 +0200
+@@ -34,6 +34,10 @@
+ #include <sys/ioctl.h>
+ #endif
+ 
++#if defined(__sun)
++#include <sys/filio.h>
++#endif
++
+ #if defined(__linux__)
+ #include <linux/fs.h>
+ #include <sys/stat.h>

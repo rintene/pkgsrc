@@ -38,17 +38,3 @@
 +#define getgrnam_r solaris_getgrnam_r
 +
 +#endif /* __sun */
---- src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c.orig     2026-04-08 15:02:30.741787070 +0200
-+++ src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c  2026-04-08 15:06:49.774858376 +0200
-@@ -50,6 +50,11 @@
-   #include <sys/procfs.h>
- #endif
-
-+#if defined(__sun)
-+ #include "solaris_compat.h"
-+ #include <sys/syscall.h>
-+#endif
-+
- /**
-  * This file contains the implementation of the native ProcessHandleImpl
-  * functions which are common to all Unix variants.

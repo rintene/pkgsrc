@@ -1,10 +1,10 @@
---- a/src/hotspot/os/posix/signals_posix.cpp	Wed Oct  7 17:21:51 2020
-+++ b/src/hotspot/os/posix/signals_posix.cpp	Sat Oct 10 16:46:21 2020
+--- src/hotspot/os/posix/signals_posix.cpp.orig 2026-05-29 16:54:53.322214775 +0200
++++ src/hotspot/os/posix/signals_posix.cpp      2026-05-29 16:57:10.952544712 +0200
 @@ -548,6 +548,8 @@
  #define JVM_HANDLE_XXX_SIGNAL JVM_handle_aix_signal
  #elif defined(LINUX)
  #define JVM_HANDLE_XXX_SIGNAL JVM_handle_linux_signal
-+#elif defined(SOLARIS)
++#elif defined(SOLARIS) || defined(__sun) || defined(__illumos__)
 +#define JVM_HANDLE_XXX_SIGNAL JVM_handle_solaris_signal
  #else
  #error who are you?

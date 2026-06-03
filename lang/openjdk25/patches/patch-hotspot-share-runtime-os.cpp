@@ -1,23 +1,25 @@
-See https://hg.openjdk.org/jdk/jdk/rev/1096ad4dbf62
+--- src/hotspot/share/runtime/os.cpp     2026-04-17 21:08:13.000000000 +0200
++++ src/hotspot/share/runtime/os.cpp       2026-05-21 11:55:09.466491855 +0200
+@@ -91,6 +91,7 @@
 
-The problem is that we want a guard based on platform, but
-_GNU_SOURCE is a per-toolchain define for the gcc toolchain.
-It "fixes" AIX because that's using the xlc toolchain.
+ # include <signal.h>
+ # include <errno.h>
++# include <alloca.h>
 
---- a/src/hotspot/share/runtime/os.cpp	Wed Aug 12 16:38:30 2020
-+++ b/src/hotspot/share/runtime/os.cpp	Thu Aug 13 19:44:36 2020
-@@ -182,7 +182,7 @@
+ OSThread*         os::_starting_thread    = nullptr;
+ volatile unsigned int os::_rand_seed      = 1234567;
+@@ -182,7 +183,7 @@
    // No offset when dealing with UTC
    time_t UTC_to_local = 0;
    if (!utc) {
 -#if (defined(_ALLBSD_SOURCE) || defined(_GNU_SOURCE)) && !defined(AIX)
-+#if (defined(_ALLBSD_SOURCE) || defined(_BSD_SOURCE)) && !defined(AIX)
++#if (defined(_ALLBSD_SOURCE) || defined(_BSD_SOURCE)) && !defined(AIX) && !defined(__sun)
      UTC_to_local = -(time_struct.tm_gmtoff);
  #elif defined(_WINDOWS)
      long zone;
-@@ -193,7 +193,7 @@
+@@ -193,7 +194,7 @@
  #endif
- 
+
      // tm_gmtoff already includes adjustment for daylight saving
 -#if !defined(_ALLBSD_SOURCE) && !defined(_GNU_SOURCE)
 +#if !defined(_ALLBSD_SOURCE) && !defined(_BSD_SOURCE)

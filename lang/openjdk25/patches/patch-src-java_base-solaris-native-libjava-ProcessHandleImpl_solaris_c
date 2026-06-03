@@ -1,0 +1,140 @@
+--- /dev/null
++++ src/java.base/solaris/native/libjava/ProcessHandleImpl_solaris.c
+@@ -0,0 +1,136 @@
++#include "jni.h"
++#include "jni_util.h"
++#include <sys/types.h>
++#include <dirent.h>
++#include <fcntl.h>
++#include <string.h>
++#include <unistd.h>
++#include <limits.h>
++#include <procfs.h>
++#include <stdlib.h>
++
++JNIEXPORT jint JNICALL
++os_initNative(JNIEnv *env, jclass clazz) {
++    return 0;
++}
++
++JNIEXPORT jint JNICALL
++os_getChildren(JNIEnv *env, jlong jpid, jlongArray jarray, 
++               jlongArray jparentArray, jlongArray jstimeArray, 
++               jlongArray jutimeArray, jlongArray jctimeArray,
++               jlongArray jpidArray) {
++    DIR* dir;
++    struct dirent* entry;
++    char path[PATH_MAX];
++    pid_t pid = (pid_t)jpid;
++    int count = 0;
++    
++    dir = opendir("/proc");
++    if (dir == NULL) {
++        return 0;
++    }
++    
++    while ((entry = readdir(dir)) != NULL) {
++        if (entry->d_name[0] >= '0' && entry->d_name[0] <= '9') {
++            pid_t child_pid = atoi(entry->d_name);
++            psinfo_t psinfo;
++            
++            snprintf(path, sizeof(path), "/proc/%d/psinfo", child_pid);
++            int fd = open(path, O_RDONLY);
++            if (fd != -1) {
++                if (read(fd, &psinfo, sizeof(psinfo)) == sizeof(psinfo)) {
++                    if (psinfo.pr_ppid == pid) {
++                        count++;
++                    }
++                }
++                close(fd);
++            }
++        }
++    }
++    
++    closedir(dir);
++    return count;
++}
++
++JNIEXPORT jint JNICALL
++os_getParentPidAndTimings(JNIEnv *env, jlong jpid, 
++                          jlongArray jparentPidArray, 
++                          jlongArray jstimeArray, 
++                          jlongArray jutimeArray,
++                          jlongArray jctimeArray) {
++    pid_t pid = (pid_t)jpid;
++    char path[PATH_MAX];
++    psinfo_t psinfo;
++    
++    snprintf(path, sizeof(path), "/proc/%d/psinfo", pid);
++    int fd = open(path, O_RDONLY);
++    if (fd == -1) {
++        return -1;
++    }
++    
++    if (read(fd, &psinfo, sizeof(psinfo)) != sizeof(psinfo)) {
++        close(fd);
++        return -1;
++    }
++    close(fd);
++    
++    jlong parentPid = (jlong)psinfo.pr_ppid;
++    (*env)->SetLongArrayRegion(env, jparentPidArray, 0, 1, &parentPid);
++    
++    // On Solaris, pr_time is total CPU time (user+system)
++    // Use pr_time for both or split if needed
++    jlong total_time = (jlong)(psinfo.pr_time.tv_sec * 1000 + psinfo.pr_time.tv_nsec / 1000000);
++    // Approximate: give all to user time, 0 to system time
++    jlong utime = total_time;
++    jlong stime = 0;
++    jlong ctime = 0;
++    
++    (*env)->SetLongArrayRegion(env, jstimeArray, 0, 1, &stime);
++    (*env)->SetLongArrayRegion(env, jutimeArray, 0, 1, &utime);
++    (*env)->SetLongArrayRegion(env, jctimeArray, 0, 1, &ctime);
++    
++    return 0;
++}
++
++JNIEXPORT jobject JNICALL
++os_getCmdlineAndUserInfo(JNIEnv *env, jlong jpid) {
++    pid_t pid = (pid_t)jpid;
++    char path[PATH_MAX];
++    psinfo_t psinfo;
++    
++    snprintf(path, sizeof(path), "/proc/%d/psinfo", pid);
++    int fd = open(path, O_RDONLY);
++    if (fd == -1) {
++        return NULL;
++    }
++    
++    if (read(fd, &psinfo, sizeof(psinfo)) != sizeof(psinfo)) {
++        close(fd);
++        return NULL;
++    }
++    close(fd);
++    
++    // Get command line from pr_psargs
++    jstring jcmdline = (*env)->NewStringUTF(env, psinfo.pr_psargs);
++    
++    // Get user name from pr_uid (simplified - return NULL for now)
++    jstring juser = NULL;
++    
++    // Find ProcessHandle.Info class
++    jclass infoClass = (*env)->FindClass(env, "java/lang/ProcessHandle$Info");
++    if (infoClass == NULL) {
++        return NULL;
++    }
++    
++    // Get constructor
++    jmethodID constructor = (*env)->GetMethodID(env, infoClass, "<init>", 
++                                                  "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)V");
++    if (constructor == NULL) {
++        return NULL;
++    }
++    
++    jobject info = (*env)->NewObject(env, infoClass, constructor,
++                                     jcmdline, NULL, juser, 0LL, NULL);
++    
++    return info;
++}
+

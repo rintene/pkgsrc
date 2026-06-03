@@ -1,0 +1,22 @@
+--- /dev/null
++++ src/java.base/solaris/classes/sun/nio/fs/DefaultFileSystemProvider.java
+@@ -0,0 +1,18 @@
++package sun.nio.fs;
++
++import java.nio.file.FileSystem;
++
++public class DefaultFileSystemProvider {
++    private static final SolarisFileSystemProvider INSTANCE
++        = new SolarisFileSystemProvider();
++
++    private DefaultFileSystemProvider() { }
++
++    public static SolarisFileSystemProvider instance() {
++        return INSTANCE;
++    }
++
++    public static FileSystem theFileSystem() {
++        return INSTANCE.theFileSystem();
++    }
++}
+

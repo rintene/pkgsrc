@@ -1,0 +1,12 @@
+--- src/java.base/unix/native/libnio/ch/NativeThread.c.orig
++++ src/java.base/unix/native/libnio/ch/NativeThread.c
+@@ -44,6 +44,9 @@
+ #elif defined(_ALLBSD_SOURCE)
+   /* Also defined in net/bsd_close.c */
+   #define INTERRUPT_SIGNAL SIGIO
++#elif defined(__sun)
++  /* Solaris/Illumos - use SIGUSR2 for interrupt signal */
++  #define INTERRUPT_SIGNAL SIGUSR2
+ #else
+   #error "missing platform-specific definition here"
+ #endif

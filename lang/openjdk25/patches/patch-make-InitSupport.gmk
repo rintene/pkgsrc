@@ -1,0 +1,11 @@
+--- make/InitSupport.gmk.orig	Mon Jun  1 19:54:49 2026
++++ make/InitSupport.gmk	Mon Jun  1 19:54:58 2026
+@@ -34,7 +34,7 @@
+ BUILD_LOG := $(OUTPUTDIR)/build.log
+ BUILD_PROFILE_LOG := $(OUTPUTDIR)/build-profile.log
+ 
+-BUILD_LOG_PIPE := > >($(TEE) -a $(BUILD_LOG)) 2> >($(TEE) -a $(BUILD_LOG) >&2) && wait
++BUILD_LOG_PIPE := 2>&1 | $(TEE) -a $(BUILD_LOG)
+ # Use this for simple echo/printf commands that are never expected to print
+ # to stderr.
+ BUILD_LOG_PIPE_SIMPLE := | $(TEE) -a $(BUILD_LOG)

@@ -1,0 +1,13 @@
+--- src/java.base/unix/native/libnio/ch/UnixFileDispatcherImpl.c.orig   2026-04-08 18:12:35.712325951 +0200
++++ src/java.base/unix/native/libnio/ch/UnixFileDispatcherImpl.c        2026-04-08 18:14:16.403831106 +0200
+@@ -38,6 +38,10 @@
+ #include <sys/ioctl.h>
+ #endif
+
++#if defined(__solaris__) || defined(__sun)
++#include <sys/filio.h>
++#endif
++
+ #include "jni.h"
+ #include "nio.h"
+ #include "nio_util.h"

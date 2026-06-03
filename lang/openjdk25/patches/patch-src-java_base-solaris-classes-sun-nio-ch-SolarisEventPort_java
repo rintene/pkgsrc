@@ -1,0 +1,48 @@
+--- /dev/null
++++ src/java.base/solaris/classes/sun/nio/ch/SolarisEventPort.java
+@@ -0,0 +1,44 @@
++// src/java.base/solaris/classes/sun/nio/ch/SolarisEventPort.java
++package sun.nio.ch;
++
++import java.io.IOException;
++import jdk.internal.misc.Unsafe;
++
++class SolarisEventPort {
++    private SolarisEventPort() { }
++
++    private static final Unsafe unsafe = Unsafe.getUnsafe();
++
++    static {
++        IOUtil.load();
++    }
++
++    // struct port_event {
++    //   int       portev_events;
++    //   ushort_t  portev_source;
++    //   ushort_t  portev_pad;
++    //   uintptr_t portev_object;
++    //   void     *portev_user;
++    // };
++    static final int SIZEOF_PORT_EVENT = eventSize();
++    static final int OFFSETOF_OBJECT   = objectOffset();
++
++    // from <poll.h>
++    static final int POLLIN          = 0x0001;
++    static final int POLLOUT         = 0x0004;
++
++    // from <sys/port.h>
++    static final int PORT_SOURCE_FD  = 4;
++
++    // -- Native methods --
++    private static native int eventSize();
++    private static native int objectOffset();
++
++    static native int port_create() throws IOException;
++    static native boolean port_associate(int port, int source, long object, int events)
++        throws IOException;
++    static native boolean port_dissociate(int port, int source, long object)
++        throws IOException;
++    static native int port_getn(int port, long pollAddress, int maxEvents, long timeout)
++        throws IOException;
++}
+
